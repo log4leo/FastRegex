@@ -1,0 +1,267 @@
+
+
+\pL
+a
+true a 0
+
+\pL
+7
+false 0
+
+\p{L}
+a
+true a 0
+
+\p{LC}
+a
+true a 0
+
+\p{LC}
+A
+true A 0
+
+\p{IsL}
+a
+true a 0
+
+\p{IsLC}
+a
+true a 0
+
+\p{IsLC}
+A
+true A 0
+
+\p{IsLC}
+9
+false 0
+
+\P{IsLC}
+9
+true 9 0
+
+// Guillemet left is initial quote punctuation
+\p{Pi}
+\u00ab
+true \u00ab 0
+
+\P{Pi}
+\u00ac
+true \u00ac 0
+
+// Guillemet right is final quote punctuation
+\p{IsPf}
+\u00bb
+true \u00bb 0
+
+\p{P}
+\u00bb
+true \u00bb 0
+
+\p{P}+
+\u00bb
+true \u00bb 0
+
+\P{IsPf}
+\u00bc
+true \u00bc 0
+
+\P{IsP}
+\u00bc
+true \u00bc 0
+
+\p{L1}
+\u00bc
+true \u00bc 0
+
+\p{L1}+
+\u00bc
+true \u00bc 0
+
+\p{L1}
+\u02bc
+false 0
+
+\p{ASCII}
+a
+true a 0
+
+\p{IsASCII}
+a
+true a 0
+
+\p{IsASCII}
+\u0370
+false 0
+
+\pLbc
+abc
+true abc 0
+
+a[r\p{InGreek}]c
+a\u0370c
+true a\u0370c 0
+
+a\p{InGreek}
+a\u0370
+true a\u0370 0
+
+a\P{InGreek}
+a\u0370
+false 0
+
+a\P{InGreek}
+ab
+true ab 0
+
+a{^InGreek}
+-
+error
+
+a\p{^InGreek}
+-
+error
+
+a\P{^InGreek}
+-
+error
+
+a\p{InGreek}
+a\u0370
+true a\u0370 0
+
+a[\p{InGreek}]c
+a\u0370c
+true a\u0370c 0
+
+a[\P{InGreek}]c
+a\u0370c
+false 0
+
+a[\P{InGreek}]c
+abc
+true abc 0
+
+a[{^InGreek}]c
+anc
+true anc 0
+
+a[{^InGreek}]c
+azc
+false 0
+
+a[\p{^InGreek}]c
+-
+error
+
+a[\P{^InGreek}]c
+-
+error
+
+a[\p{InGreek}]
+a\u0370
+true a\u0370 0
+
+a[r\p{InGreek}]c
+arc
+true arc 0
+
+a[\p{InGreek}r]c
+arc
+true arc 0
+
+a[r\p{InGreek}]c
+arc
+true arc 0
+
+a[^\p{InGreek}]c
+a\u0370c
+false 0
+
+a[^\P{InGreek}]c
+a\u0370c
+true a\u0370c 0
+
+a[\p{InGreek}&&[^\u0370]]c
+a\u0370c
+false 0
+
+(?s)ab.
+ab\n
+true ab\n 0
+
+a[\p{L}&&[\P{InGreek}]]c
+a\u6000c
+true a\u6000c 0
+
+a[\p{L}&&[\P{InGreek}]]c
+arc
+true arc 0
+
+a[\p{L}&&[\P{InGreek}]]c
+a\u0370c
+false 0
+
+a\p{InGreek}c
+a\u0370c
+true a\u0370c 0
+
+a\p{Sc}
+a$
+true a$ 0
+
+.?b
+aaaab
+true ab 0
+
+// Reluctant ? metacharacter
+a??b
+aaaab
+true ab 0
+
+.??b
+aaaab
+true ab 0
+
+// Greedy Repetition
+a{2,3}
+a
+false 0
+
+a{2,3}
+aa
+true aa 0
+
+a{2,3}
+aaa
+true aaa 0
+
+a{2,3}
+aaaa
+true aaa 0
+
+a{3,}
+zzzaaaazzz
+true aaaa 0
+
+a{3,}
+zzzaazzz
+false 0
+
+// Reluctant Repetition
+a{2,3}?
+a
+false 0
+
+a{2,3}?
+aa
+true aa 0
+
+a{2,3}?
+aaa
+true aa 0
+
+a{2,3}?
+aaaa
+true aa 0
+

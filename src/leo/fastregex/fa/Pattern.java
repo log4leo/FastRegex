@@ -27,7 +27,11 @@ public class Pattern
 	private boolean isPrefix;
 	private boolean isSuffix;
 
-	public Pattern(String pattern)
+	public static Pattern compile(String pattern)
+	{
+		return new Pattern(pattern);
+	}
+	private Pattern(String pattern)
 	{
 		Parser parser = new Parser(pattern);
 		RegEx re = parser.parse();

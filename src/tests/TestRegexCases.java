@@ -28,7 +28,7 @@ public class TestRegexCases
 				continue;
 				}
 			count++;
-			Pattern pattern=new Pattern(p);
+			Pattern pattern=Pattern.compile(p);
 			String s=sc.nextLine();
 			String ret=sc.nextLine();
 			boolean ans=ret.split(" ")[0].equals("true");

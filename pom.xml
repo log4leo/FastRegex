@@ -3,9 +3,9 @@
   <groupId>leo</groupId>
   <artifactId>FastRegex</artifactId>
   <version>1.0</version>
- 
   <build>
    
+
     <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
@@ -16,6 +16,7 @@
       </resource>
     </resources>
     <plugins>
+
      <plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-compiler-plugin</artifactId>

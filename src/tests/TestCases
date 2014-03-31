@@ -1,0 +1,548 @@
+
+// Copyright (c) 1999, 2009, Oracle and/or its affiliates. All rights reserved.
+// DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+//
+// This code is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License version 2 only, as
+// published by the Free Software Foundation.
+//
+// This code is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// version 2 for more details (a copy is included in the LICENSE file that
+// accompanied this code).
+//
+// You should have received a copy of the GNU General Public License version
+// 2 along with this work; if not, write to the Free Software Foundation,
+// Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+//
+// Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+// or visit www.oracle.com if you need additional information or have any
+// questions.
+//
+//
+// This file contains test cases for regular expressions.
+// A test case consists of three lines:
+// The first line is a pattern used in the test
+// The second line is the input to search for the pattern in
+// The third line is a concatentation of the match, the number of groups,
+//     and the contents of the first four subexpressions.
+// Empty lines and lines beginning with comment slashes are ignored.
+//
+// Test unsetting of backed off groups
+
+[a-c&&[d-f]]
+a
+false 0
+
+[a-c&&[d-f]]
+e
+false 0
+
+[a-c&&[d-f]]
+z
+false 0
+
+[[a-c]&&[d-f]]
+a
+false 0
+
+[[a-c]&&[d-f]]
+e
+false 0
+
+[[a-c]&&[d-f]]
+z
+false 0
+
+[a-c&&d-f]
+a
+false 0
+
+[a-m&&m-z]
+m
+true m 0
+
+[a-m&&m-z&&a-c]
+m
+false 0
+
+[a-m&&m-z&&a-z]
+m
+true m 0
+
+[[a-m]&&[m-z]]
+a
+false 0
+
+[[a-m]&&[m-z]]
+m
+true m 0
+
+[[a-m]&&[m-z]]
+z
+false 0
+
+[[a-m]&&[^a-c]]
+a
+false 0
+
+[[a-m]&&[^a-c]]
+d
+true d 0
+
+[a-m&&[^a-c]]
+a
+false 0
+
+[a-m&&[^a-c]]
+d
+true d 0
+
+[a-cd-f&&[d-f]]
+a
+false 0
+
+[a-cd-f&&[d-f]]
+e
+true e 0
+
+[[a-c]&&d-fa-c]
+a
+true a 0
+
+[[a-c]&&[d-f][a-c]]
+a
+true a 0
+
+[[a-c][d-f]&&abc]
+a
+true a 0
+
+[[a-c][d-f]&&abc[def]]
+e
+true e 0
+
+[[a-c]&&[b-d]&&[c-e]]
+a
+false 0
+
+[[a-c]&&[b-d]&&[c-e]]
+c
+true c 0
+
+[[a-c]&&[b-d][c-e]&&[u-z]]
+c
+false 0
+
+[a-c&&a-d&&a-eghi]
+b
+true b 0
+
+
+
+[[a[b]]&&[b[a]]]
+a
+true a 0
+
+[[a]&&[b][c][a]&&[^d]]
+a
+true a 0
+
+[[a]&&[b][c][a]&&[^d]]
+d
+false 0
+
+[[[a-d]&&[c-f]]]
+a
+false 0
+
+[[[a-d]&&[c-f]]]
+c
+true c 0
+
+[[[a-d]&&[c-f]]&&[c]]
+c
+true c 0
+
+[[[a-d]&&[c-f]]&&[c]&&c]
+c
+true c 0
+
+[[[a-d]&&[c-f]]&&[c]&&c&&c]
+c
+true c 0
+
+[[[a-d]&&[c-f]]&&[c]&&c&&[cde]]
+c
+true c 0
+
+[z[abc&&bcd]]
+c
+true c 0
+
+[z[abc&&bcd]&&[u-z]]
+z
+true z 0
+
+[x[abc&&bcd[z]]&&[u-z]]
+z
+false 0
+
+[x[[wz]abc&&bcd[z]]&&[u-z]]
+z
+true z 0
+
+[[abc]&&[def]abc]
+a
+true a 0
+
+[[abc]&&[def]xyz[abc]]
+a
+true a 0
+
+^(a)?a
+a
+true a 1
+
+^(aa(bb)?)+$
+aabbaa
+true aabbaa 2 aa bb
+
+((a|b)?b)+
+b
+true b 2 b
+
+(aaa)?aaa
+aaa
+true aaa 1
+
+^(a(b)?)+$
+aba
+true aba 2 a b
+
+^(a(b(c)?)?)?abc
+abc
+true abc 3
+
+^(a(b(c))).*
+abc
+true abc 3 abc bc c
+
+// use of x modifier
+//abc(?x)blah
+//abcblah
+//true abcblah 0
+
+//abc(?x)  blah
+//abcblah
+//true abcblah 0
+
+//abc(?x)  blah  blech
+//abcblahblech
+//true abcblahblech 0
+
+//abc(?x)  blah 
+//abcblah
+//true abcblah 0
+
+// Simple alternation
+a|b
+a
+true a 0
+
+a|b
+z
+false 0
+
+a|b
+b
+true b 0
+
+a|b|cd
+cd
+true cd 0
+
+a|ad
+ad
+true a 0
+
+z(a|ac)b
+zacb
+true zacb 1 ac
+
+// Simple char class
+//[abc]+
+//ababab
+//true ababab 0
+
+//[abc]+
+//defg
+//false 0
+
+//[abc]+[def]+[ghi]+
+//zzzaaddggzzz
+//true aaddgg 0
+
+// Range char class
+//[a-g]+
+//zzzggg
+//true ggg 0
+
+//[a-g]+
+//mmm
+//false 0
+
+//[a-]+
+//za-9z
+//true a- 0
+
+//[a-\\u4444]+
+//za-9z
+//true za 0
+
+// Negated char class
+//[^abc]+
+//ababab
+//false 0
+
+//[^abc]+
+//aaabbbcccdefg
+//true defg 0
+
+// Making sure a ^ not in first position matches literal ^
+//[abc^b]
+//b
+//true b 0
+
+[abc^b]
+^
+true ^ 0
+
+// Class union and intersection
+[abc[def]]
+b
+true b 0
+
+[abc[def]]
+e
+true e 0
+
+[a-d[0-9][m-p]]
+a
+true a 0
+
+[a-d[0-9][m-p]]
+o
+true o 0
+
+[a-d[0-9][m-p]]
+4
+true 4 0
+
+[a-d[0-9][m-p]]
+e
+false 0
+
+[a-d[0-9][m-p]]
+u
+false 0
+
+[[a-d][0-9][m-p]]
+b
+true b 0
+
+[[a-d][0-9][m-p]]
+z
+false 0
+
+[a-c[d-f[g-i]]]
+a
+true a 0
+
+[a-c[d-f[g-i]]]
+e
+true e 0
+
+[a-c[d-f[g-i]]]
+h
+true h 0
+
+[a-c[d-f[g-i]]]
+m
+false 0
+
+[a-c[d-f[g-i]]m]
+m
+true m 0
+
+[abc[def]ghi]
+a
+true a 0
+
+[abc[def]ghi]
+d
+true d 0
+
+[abc[def]ghi]
+h
+true h 0
+
+[abc[def]ghi]
+w
+false 0
+
+[abc[^bcd]]
+a
+true a 0
+
+[abc[^bcd]]
+d
+false 0
+
+// Test the dot metacharacter
+a.c.+
+a#c%&
+true a#c%& 0
+
+//ab.
+//ab\n
+//false 0
+
+
+// Greedy ? metacharacter
+//a?b
+//aaaab
+//true ab 0
+
+a?b
+b
+true b 0
+
+a?b
+aaaccc
+false 0
+
+
+
+a??b
+b
+true b 0
+
+a??b
+aaaccc
+false 0
+
+
+// Possessive ? metacharacter
+a?+b
+aaaab
+true ab 0
+
+a?+b
+b
+true b 0
+
+a?+b
+aaaccc
+false 0
+
+.?+b
+aaaab
+true ab 0
+
+// Greedy + metacharacter
+a+b
+aaaab
+true aaaab 0
+
+a+b
+b
+false 0
+
+a+b
+aaaccc
+false 0
+
+.+b
+aaaab
+true aaaab 0
+
+// Reluctant + metacharacter
+a+?b
+aaaab
+true aaaab 0
+
+
+a+?b
+aaaccc
+false 0
+
+.+?b
+aaaab
+true aaaab 0
+
+// Possessive + metacharacter
+a++b
+aaaab
+true aaaab 0
+
+a++b
+b
+false 0
+
+a++b
+aaaccc
+false 0
+
+
+
+
+
+// Nondeterministic group
+(a+b)+
+ababab
+true ababab 1 ab
+
+(a|b)+
+ccccd
+false 1
+
+// Deterministic group
+(ab)+
+ababab
+true ababab 1 ab
+
+(ab)+
+accccd
+false 1
+
+(ab)*
+ababab
+true ababab 1 ab
+
+(ab)(cd*)
+zzzabczzz
+true abc 2 ab c
+
+abc(d)*abc
+abcdddddabc
+true abcdddddabc 1 d
+
+
+
+// Possessive * metacharacter
+a*+b
+aaaab
+true aaaab 0
+
+a*+b
+b
+true b 0
+
+a*+b
+aaaccc
+false 0
+
+
+

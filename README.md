@@ -9,7 +9,7 @@ FastRegex has support for most regular expression features:
 * | 
 * ()
 * [] [^] [&&]
-* ^,$
+* ^ $
 
 How to get 
 =========

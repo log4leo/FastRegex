@@ -3,6 +3,7 @@ FastRegex
 
 FastRegex is a <b>regular expression engine</b> written in Java, it is faster than JDK in most cases. It works by compiling regular expressions to NFA and use NFA to match string candidates. General ideas and performance indices can be found in this [post](http://swtch.com/~rsc/regexp/regexp1.html).
 
+FastRegex has support for most regular expression features: *,?,+,.,|,(),[],^,$
 
 How to get 
 =========

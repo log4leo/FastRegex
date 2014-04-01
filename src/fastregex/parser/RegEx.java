@@ -1,4 +1,4 @@
-package leo.fastregex.parser;
+package fastregex.parser;
 
 public abstract class RegEx
 {

@@ -1,4 +1,4 @@
-package leo.fastregex.parser;
+package fastregex.parser;
 
 @Deprecated
 public class Prefix extends RegEx

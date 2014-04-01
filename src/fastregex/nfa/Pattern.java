@@ -1,21 +1,23 @@
-package leo.fastregex.fa;
+package fastregex.nfa;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import leo.fastregex.parser.Choice;
-import leo.fastregex.parser.MultiChoice;
-import leo.fastregex.parser.Parser;
-import leo.fastregex.parser.PlusRepetition;
-import leo.fastregex.parser.Primitives;
-import leo.fastregex.parser.QuoraRepetition;
-import leo.fastregex.parser.RegEx;
-import leo.fastregex.parser.Sequence;
-import leo.fastregex.parser.SpecialChars;
-import leo.fastregex.parser.StarRepetition;
+import fastregex.parser.Choice;
+import fastregex.parser.MultiChoice;
+import fastregex.parser.Parser;
+import fastregex.parser.PlusRepetition;
+import fastregex.parser.Primitives;
+import fastregex.parser.QuoraRepetition;
+import fastregex.parser.RegEx;
+import fastregex.parser.Sequence;
+import fastregex.parser.SpecialChars;
+import fastregex.parser.StarRepetition;
 
 /**
  * After parsing regular expression string to regex object. we need to compile
- * the object to a NFA, then we can match strings with this NFA
+ * the object to a NFA, then we can match strings with NFA simulation
  * 
  * @author leo
  * 
@@ -23,14 +25,17 @@ import leo.fastregex.parser.StarRepetition;
 public class Pattern
 {
 	private static final int Blank = 294;
-	private State start;
+	private final State start;
 	private boolean isPrefix;
 	private boolean isSuffix;
+	private final DState dStart;
+	private HashMap<NfaList, DState> allDStates = new HashMap<>();
 
 	public static Pattern compile(String pattern)
 	{
 		return new Pattern(pattern);
 	}
+
 	private Pattern(String pattern)
 	{
 		Parser parser = new Parser(pattern);
@@ -41,9 +46,13 @@ public class Pattern
 		patch(f.out, matchState);
 		patch1(f.out1, matchState);
 		this.start = f.start;
+		NfaList startNFA = new NfaList(startList(start, l1));
+		dStart = new DState(startNFA);
+		allDStates.put(startNFA, dStart);
 	}
 
 	private static final State matchState = new State(257);
+	private static final DState deadState = new DState();
 	private static final State blank = new State(Blank);
 	private static int listid = 0;
 	private ArrayList<State> l1 = new ArrayList<>();
@@ -206,13 +215,39 @@ public class Pattern
 		}
 	}
 
+	private DState step(DState cState, int c)
+	{
+		if (cState.next[c] == deadState) { return deadState; }
+		if (cState.next[c] != null) { return cState.next[c]; }
+		ArrayList<State> clist = new ArrayList<>();
+		ArrayList<State> nlist = new ArrayList<>();
+		for (int i = 0; i < cState.nList.ss.length; i++)
+		{
+			clist.add(cState.nList.ss[i]);
+		}
+		step(clist, c, nlist);
+		if (nlist.isEmpty())
+		{
+			return deadState;
+		}
+		else
+		{
+			NfaList list = new NfaList(nlist);
+			if (!allDStates.containsKey(list))
+			{
+				allDStates.put(list, new DState(list));
+			}
+			return cState.next[c] = allDStates.get(list);
+		}
+	}
+
 	public boolean match(String s)
 	{
 		ArrayList<State> clist, nlist, t;
 		int end = isPrefix ? 1 : s.length();
 		for (int startIndex = 0; startIndex < end; startIndex++)
 		{
-			clist=startList(start, l1);
+			clist = startList(start, l1);
 			nlist = l2;
 			for (int i = startIndex; i < s.length(); i++)
 			{
@@ -229,12 +264,39 @@ public class Pattern
 		return false;
 	}
 
+	public boolean dfaMatch(String s)
+	{
+		int end = isPrefix ? 1 : s.length();
+		for (int startIndex = 0; startIndex < end; startIndex++)
+		{
+			DState cState = dStart;
+			for (int i = startIndex; i < s.length(); i++)
+			{
+				char c = s.charAt(i);
+				cState = step(cState, c - ' ');
+				if (cState == deadState) break;
+				if (!isSuffix && ismatch(cState)) return true;
+			}
+			if (cState != deadState && ismatch(cState)) return true;
+		}
+		return false;
+	}
+
 	private boolean ismatch(ArrayList<State> l)
 	{
 		int i;
 		for (i = 0; i < l.size(); i++)
 		{
 			if (l.get(i) == matchState) return true;
+		}
+		return false;
+	}
+
+	private boolean ismatch(DState ds)
+	{
+		for (int i = 0; i < ds.nList.ss.length; i++)
+		{
+			if (ds.nList.ss[i] == matchState) return true;
 		}
 		return false;
 	}

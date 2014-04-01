@@ -1,4 +1,4 @@
-package leo.fastregex.fa;
+package fastregex.nfa;
 
 public class ScaleState extends State
 {

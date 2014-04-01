@@ -1,4 +1,4 @@
-package leo.fastregex.fa;
+package fastregex.nfa;
 
 import java.util.ArrayList;
 

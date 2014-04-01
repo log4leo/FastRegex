@@ -28,7 +28,7 @@ FastRegex is easy to use, you just need to get a compiled Pattern object with a 
 Pattern pattern2=Pattern.compile("^z+[1-5&&8940[3]]*(ab)(cd*)z+$");
 System.out.println(pattern2.match("zzz34abczzz"));
 
-//If this pattern is used frequently, you can use dfa match to efficiently imporve the performance
+//If this pattern is used frequently, you can use dfa match to efficiently improve the performance
 boolean ans=pattern2.dfaMatch("zzzzzabczzz");
 ```
 

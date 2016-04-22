@@ -12,14 +12,14 @@ public class Frag
 	{
 		start = s;
 		out = o;
-		out1 = new ArrayList<>();
+		out1 = new ArrayList<State>();
 	}
 
 	public Frag(State s)
 	{
 		start = s;
-		out = new ArrayList<>();
-		out1 = new ArrayList<>();
+		out = new ArrayList<State>();
+		out1 = new ArrayList<State>();
 	}
 
 	public Frag(State s, ArrayList<State> o, ArrayList<State> o1)

@@ -1,19 +1,9 @@
 package fastregex.nfa;
 
+import fastregex.parser.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-
-import fastregex.parser.Choice;
-import fastregex.parser.MultiChoice;
-import fastregex.parser.Parser;
-import fastregex.parser.PlusRepetition;
-import fastregex.parser.Primitives;
-import fastregex.parser.QuoraRepetition;
-import fastregex.parser.RegEx;
-import fastregex.parser.Sequence;
-import fastregex.parser.SpecialChars;
-import fastregex.parser.StarRepetition;
 
 /**
  * After parsing regular expression string to regex object. we need to compile
@@ -29,7 +19,7 @@ public class Pattern
 	private boolean isPrefix;
 	private boolean isSuffix;
 	private final DState dStart;
-	private HashMap<NfaList, DState> allDStates = new HashMap<>();
+	private HashMap<NfaList, DState> allDStates = new HashMap<NfaList,DState>();
 
 	public static Pattern compile(String pattern)
 	{
@@ -55,8 +45,8 @@ public class Pattern
 	private static final DState deadState = new DState();
 	private static final State blank = new State(Blank);
 	private static int listid = 0;
-	private ArrayList<State> l1 = new ArrayList<>();
-	private ArrayList<State> l2 = new ArrayList<>();
+	private ArrayList<State> l1 = new ArrayList<State>();
+	private ArrayList<State> l2 = new ArrayList<State>();
 
 	private Frag Regex2NFA(RegEx re)
 	{
@@ -219,8 +209,8 @@ public class Pattern
 	{
 		if (cState.next[c] == deadState) { return deadState; }
 		if (cState.next[c] != null) { return cState.next[c]; }
-		ArrayList<State> clist = new ArrayList<>();
-		ArrayList<State> nlist = new ArrayList<>();
+		ArrayList<State> clist = new ArrayList<State>();
+		ArrayList<State> nlist = new ArrayList<State>();
 		for (int i = 0; i < cState.nList.ss.length; i++)
 		{
 			clist.add(cState.nList.ss[i]);
@@ -304,7 +294,7 @@ public class Pattern
 	/* Helper methods for generating nfa */
 	private ArrayList<State> list1(State outp)
 	{
-		ArrayList<State> list = new ArrayList<>();
+		ArrayList<State> list = new ArrayList<State>();
 		list.add(outp);
 		return list;
 	}

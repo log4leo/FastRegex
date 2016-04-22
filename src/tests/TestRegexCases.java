@@ -1,14 +1,13 @@
 package tests;
 
-import java.io.File;
-import java.util.Scanner;
-
+import fastregex.nfa.Pattern;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import fastregex.nfa.Pattern;
+import java.io.File;
+import java.util.Scanner;
 
 @RunWith(JUnit4.class)
 public class TestRegexCases
@@ -18,7 +17,7 @@ public class TestRegexCases
 	{
 		int line=0;
 		int count=0;
-		Scanner sc=new Scanner(new File("src\\tests\\TestCases"));
+		Scanner sc=new Scanner(new File("src/tests/TestCases"));
 		while(sc.hasNextLine())
 		{	
 			String p=sc.nextLine();
